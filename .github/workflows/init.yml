@@ -1,0 +1,29 @@
+name: Init platforms
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Create platform folders
+        run: |
+          flutter create --org com.example --project-name budget_app --platforms=android,windows .
+
+      - name: Commit platform folders
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add android windows
+          git commit -m "Add android and windows platforms" || echo "nothing to commit"
+          git push
